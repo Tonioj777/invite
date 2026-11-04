@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171210">
+  <meta name="description" content="Небольшое интерактивное приглашение на хороший вечер.">
+  <title>Есть планы на вечер? ✨</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="site-shell">
+    <!-- <div class="topline">
+      <a class="brand" href="#" aria-label="Начать сначала" id="restart">вечер<span>•</span></a>
+      <span class="topline-note">маленькое приглашение</span>
+      <span class="step-count" id="stepCount">01 / 04</span>
+    </div> -->
+
+    <section class="experience" aria-live="polite">
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+      <article class="slide is-active" data-slide="0">
+        <div class="photo photo-lounge"></div>
+        <div class="shade"></div>
+        <div class="slide-content">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Есть предложение!</p>
+          <h1 class="text">Как насчёт того, чтобы сегодня вечером отложить все дела, забыть о заботах и провести время в приятной компании?  <span class="smile">:)</span></h1>
+          <p class="subcopy">Кажется, у меня есть идея.</p>
+          <div class="actions">
+            <button class="btn btn-yes" data-next>Да,заманчиво! <span>😊</span></button>
+            <button class="btn btn-no" id="noButton">Нет <span>🙈</span></button>
+          </div>
+          <p class="hint" id="hint">Попробуйте нажать «Нет»… если получится</p>
+        </div>
+        <span class="slide-index">01 <i>—</i> 04</span>
+      </article>
+
+      <article class="slide" data-slide="1">
+        <div class="photo photo-dinner"></div>
+        <div class="shade"></div>
+        <div class="slide-content">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> План звучит неплохо</p>
+          <h2>А если я скажу, что нас ждёт… Посидеть, поболтать,<br>выпить и вкусно<br><em>покушать?</em> </h2>
+          <p class="subcopy">Без спешки, с хорошей компанией и вкусной едой. Ну что, соблазнительно звучит? :)</p>
+          <div class="actions">
+            <button class="btn btn-yes" data-next>Да <span>😊</span></button>
+            <button class="btn btn-no runaway">Нет <span>🙈</span></button>
+          </div>
+          <p class="hint">Кажется, ответ уже очевиден</p>
+        </div>
+        <span class="slide-index">02 <i>—</i> 04</span>
+      </article>
+
+      <article class="slide" data-slide="2">
+        <div class="photo photo-cat"></div>
+        <div class="shade shade-strong"></div>
+        <div class="slide-content">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Вот это настрой</p>
+          <h2>Я рад, что вы не стали долго раздумывать и уверенно нажали  <em>«да»</em> <span class="smile">:)</span></h2>
+          <p class="confirmation">А теперь подтвердим<br>ваши намерения.</p>
+          <div class="actions">
+            <button class="btn btn-yes" data-next>Да, подтверждаю <span>🥰</span></button>
+            <button class="btn btn-no runaway">Нет <span>🙈</span></button>
+          </div>
+          <p class="hint">Последний шаг — и всё узнаете</p>
+        </div>
+        <span class="slide-index">03 <i>—</i> 04</span>
+      </article>
+
+      <article class="slide final-slide" data-slide="3">
+        <div class="photo photo-room"></div>
+        <div class="shade"></div>
+        <div class="slide-content final-content">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Отличный выбор</p>
+          <h2>Мы как всегда<br><em>в номере.</em> <span class="smile">:)</span></h2>
+          <!-- <div class="address-card">
+            <span class="pin" aria-hidden="true">⌖</span>
+            <div>
+              <p class="address-label">Наш адрес</p>
+              <p class="address-name" id="addressName">Hotel Paradise</p>
+              <p id="addressStreet">ул. Примерная, 12</p>
+              <p id="addressRoom">Комната 306</p>
+            </div> -->
+            <!-- <button class="copy-btn" id="copyAddress" aria-label="Скопировать адрес" title="Скопировать адрес">⧉</button>
+          </div>
+          <p class="final-note" id="copyStatus">Сохраняйте адрес и до встречи ✨</p> -->
+          <div class="btn btn-yes final-cta" id="finishButton"><span class="calendar-icon">✨</span> До встречи!</div>
+          <!-- <button class="restart-link" id="restartFinal">Пройти ещё раз</button> -->
+        </div>
+        <span class="slide-index">04 <i>—</i> 04</span>
+      </article>
+
+      <div class="slide-controls" aria-label="Навигация по приглашению">
+        <button id="prevSlide" class="arrow-btn" aria-label="Предыдущий экран" disabled>←</button>
+        <!-- <div class="dots" id="dots">
+          <button class="dot active" data-go="0" aria-label="Экран 1"></button>
+          <button class="dot" data-go="1" aria-label="Экран 2"></button>
+          <button class="dot" data-go="2" aria-label="Экран 3"></button>
+          <button class="dot" data-go="3" aria-label="Экран 4"></button>
+        </div> -->
+        <button id="nextSlide" class="arrow-btn" aria-label="Следующий экран">→</button>
+      </div>
+    </section>
+
+    <!-- <footer class="footer">
+      <div class="footer-item"><span class="footer-icon">▣</span><div><h3>Один экран — целая история</h3><p>Плавные переходы и наезды создают живое, цельное впечатление.</p></div></div>
+      <div class="footer-item"><span class="footer-icon">↯</span><div><h3>Немного интерактива</h3><p>Кнопка «Нет» ускользает, потому что иногда ответ и так известен.</p></div></div>
+      <div class="footer-item"><span class="footer-icon">✧</span><div><h3>Эмоции и атмосфера</h3><p>Тёплый свет, мягкие детали и лёгкий юмор вместо обычного приглашения.</p></div></div>
+      <div class="footer-tag">Просто.<br>Стильно.<br><em>С характером.</em> ☺</div>
+    </footer> -->
+    <!-- <p class="fineprint">Сделано для хорошего вечера <span>♥</span></p> -->
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
