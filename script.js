@@ -1,134 +1,3 @@
-// (() => {
-//   const slides = [...document.querySelectorAll('.slide')];
-//   const dots = [...document.querySelectorAll('.dot')];
-//   const progressBar = document.getElementById('progressBar');
-//   const stepCount = document.getElementById('stepCount');
-//   const prevButton = document.getElementById('prevSlide');
-//   const nextButton = document.getElementById('nextSlide');
-//   const noButton = document.getElementById('noButton');
-//   const hint = document.getElementById('hint');
-//   let current = 0;
-//   let noAttempts = 0;
-
-//   function showSlide(index) {
-//     const next = Math.max(0, Math.min(slides.length - 1, index));
-//     slides.forEach((slide, i) => {
-//       slide.classList.toggle('is-active', i === next);
-//       slide.classList.toggle('was-left', i < next);
-//       slide.setAttribute('aria-hidden', i === next ? 'false' : 'true');
-//     });
-//     dots.forEach((dot, i) => {
-//       dot.classList.toggle('active', i === next);
-//       dot.setAttribute('aria-current', i === next ? 'step' : 'false');
-//     });
-//     current = next;
-//     progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
-//     stepCount.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-//     prevButton.disabled = current === 0;
-//     nextButton.disabled = current === slides.length - 1;
-//     // Re-trigger entrance animation each time a slide becomes active.
-//     const content = slides[current].querySelector('.slide-content');
-//     content.style.animation = 'none';
-//     void content.offsetWidth;
-//     content.style.animation = '';
-//   }
-
-//   document.querySelectorAll('[data-next]').forEach(button => {
-//     button.addEventListener('click', () => showSlide(current + 1));
-//   });
-//   dots.forEach(dot => dot.addEventListener('click', () => showSlide(Number(dot.dataset.go))));
-//   prevButton.addEventListener('click', () => showSlide(current - 1));
-//   nextButton.addEventListener('click', () => showSlide(current + 1));
-
-//   function dodge(button, event) {
-//     if (current === 0 && button === noButton) {
-//       noAttempts++;
-//       hint.textContent = ['Ой, не получилось 😏', 'Кажется, кнопка тоже за «да»', 'Может, всё-таки нажмём «Да»?'][Math.min(noAttempts - 1, 2)];
-//     }
-//     const slide = button.closest('.slide');
-//     const bounds = slide.getBoundingClientRect();
-//     const btn = button.getBoundingClientRect();
-//     const pad = 18;
-//     const maxX = Math.max(pad, bounds.width - btn.width - pad);
-//     const maxY = Math.max(bounds.height * .48, bounds.height - btn.height - 70);
-//     // Keep the button in the lower half of the current slide and avoid the edges.
-//     const x = pad + Math.random() * Math.max(1, maxX - pad);
-//     const y = bounds.height * .52 + Math.random() * Math.max(1, maxY - bounds.height * .52);
-//     button.style.position = 'absolute';
-//     button.style.left = `${Math.min(x, bounds.width - btn.width - pad)}px`;
-//     button.style.top = `${Math.min(y, bounds.height - btn.height - 55)}px`;
-//     button.style.zIndex = '10';
-//     button.style.transition = 'left .22s ease, top .22s ease, transform .22s ease';
-//     button.style.transform = `rotate(${Math.random() > .5 ? 1 : -1}${Math.floor(4 + Math.random() * 9)}deg)`;
-//     if (event) event.preventDefault();
-//   }
-
-//   [noButton, ...document.querySelectorAll('.runaway')].forEach(button => {
-//     button.addEventListener('pointerenter', event => {
-//       // On desktop, run away as the pointer approaches.
-//       if (event.pointerType === 'mouse') dodge(button, event);
-//     });
-//     button.addEventListener('pointerdown', event => {
-//       // Touch devices get a real dodge on tap; no button action can be triggered.
-//       dodge(button, event);
-//     });
-//     button.addEventListener('click', event => {
-//       event.preventDefault();
-//       dodge(button, event);
-//     });
-//     button.addEventListener('focus', () => {
-//       button.blur();
-//     });
-//   });
-
-//   const restart = () => {
-//     document.querySelectorAll('.btn-no').forEach(button => {
-//       button.style.position = '';
-//       button.style.left = '';
-//       button.style.top = '';
-//       button.style.transform = '';
-//       button.style.zIndex = '';
-//     });
-//     noAttempts = 0;
-//     if (hint) hint.textContent = 'Попробуйте нажать «Нет»… если получится';
-//     showSlide(0);
-//   };
-//   document.getElementById('restart').addEventListener('click', event => { event.preventDefault(); restart(); });
-//   document.getElementById('restartFinal').addEventListener('click', restart);
-//   document.getElementById('finishButton').addEventListener('click', () => {
-//     const btn = document.getElementById('finishButton');
-//     btn.innerHTML = '<span class="calendar-icon">✓</span> Договорились!';
-//     document.getElementById('copyStatus').textContent = 'До встречи — вечер обещает быть отличным ✨';
-//   });
-
-//   document.getElementById('copyAddress').addEventListener('click', async () => {
-//     const address = [
-//       document.getElementById('addressName').textContent,
-//       document.getElementById('addressStreet').textContent,
-//       document.getElementById('addressRoom').textContent
-//     ].join('\n');
-//     const status = document.getElementById('copyStatus');
-//     try {
-//       await navigator.clipboard.writeText(address);
-//       status.textContent = 'Адрес скопирован — сохраните его ✨';
-//     } catch {
-//       status.textContent = address;
-//     }
-//   });
-
-//   // Swipe support for touchscreens.
-//   let touchStartX = 0;
-//   const experience = document.querySelector('.experience');
-//   experience.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
-//   experience.addEventListener('touchend', event => {
-//     const delta = event.changedTouches[0].clientX - touchStartX;
-//     if (Math.abs(delta) > 70) showSlide(current + (delta < 0 ? 1 : -1));
-//   }, { passive: true });
-
-//   showSlide(0);
-// })();
-
-
 (() => {
   const slides = [...document.querySelectorAll('.slide')];
   const dots = [...document.querySelectorAll('.dot')];
@@ -178,7 +47,10 @@
   if (nextButton) nextButton.addEventListener('click', () => showSlide(current + 1));
 
   function dodge(button, event) {
-    if (event) event.preventDefault();
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
     if (current === 0 && button === noButton) {
       noAttempts++;
@@ -194,19 +66,27 @@
     const slide = button.closest('.slide');
     if (!slide) return;
 
-    // Важно: сначала переводим в absolute, чтобы размеры и система координат
-    // были стабильными относительно слайда
+    const yesBtn = slide.querySelector('.btn-yes');
+
+    // На время анимации отключаем клики по «Да»,
+    // чтобы случайный тап не попал в неё
+    if (yesBtn) {
+      yesBtn.style.pointerEvents = 'none';
+      clearTimeout(yesBtn._reenableTimer);
+      yesBtn._reenableTimer = setTimeout(() => {
+        yesBtn.style.pointerEvents = '';
+      }, 600);
+    }
+
+    // Переводим в absolute, сохраняя текущую визуальную позицию
     const wasAbsolute = button.style.position === 'absolute';
     if (!wasAbsolute) {
-      // Запоминаем текущую позицию относительно слайда, чтобы первый прыжок
-      // начинался из правильной точки
       const slideRect = slide.getBoundingClientRect();
       const btnRect = button.getBoundingClientRect();
       button.style.position = 'absolute';
       button.style.left = `${btnRect.left - slideRect.left}px`;
       button.style.top = `${btnRect.top - slideRect.top}px`;
       button.style.margin = '0';
-      // Форсируем reflow, чтобы transition стартовал от текущей позиции
       void button.offsetWidth;
     }
 
@@ -215,31 +95,32 @@
     const btnW = button.offsetWidth;
     const btnH = button.offsetHeight;
 
-    // Запретная зона вокруг кнопки «Да»
-    const yesBtn = slide.querySelector('.btn-yes');
+    // На узких экранах (телефоны) увеличиваем «запретную» зону вокруг «Да»
+    const isMobile = window.innerWidth <= 760;
+    const margin = isMobile ? 56 : 36;
+
     let forbidden = null;
+    let yesCenterX = slideW / 2;
+    let yesCenterY = slideH / 2;
+
     if (yesBtn) {
       const yesRect = yesBtn.getBoundingClientRect();
       const slideRect = slide.getBoundingClientRect();
-      const margin = 28;
       forbidden = {
         left: yesRect.left - slideRect.left - margin,
         top: yesRect.top - slideRect.top - margin,
         right: yesRect.right - slideRect.left + margin,
         bottom: yesRect.bottom - slideRect.top + margin
       };
+      yesCenterX = (yesRect.left + yesRect.right) / 2 - slideRect.left;
+      yesCenterY = (yesRect.top + yesRect.bottom) / 2 - slideRect.top;
     }
 
-    // Жёсткие границы — кнопка целиком внутри слайда
-    const pad = 14;
+    const pad = isMobile ? 12 : 14;
     const minX = pad;
     const maxX = Math.max(minX, slideW - btnW - pad);
     const minY = pad;
     const maxY = Math.max(minY, slideH - btnH - pad);
-
-    // Предпочитаем нижнюю половину, но не выходим за pad
-    const preferMinY = Math.max(minY, Math.floor(slideH * 0.40));
-    const preferMaxY = maxY;
 
     const overlaps = (px, py) => {
       if (!forbidden) return false;
@@ -251,14 +132,27 @@
       );
     };
 
+    // Минимальная дистанция от центра «Да» (чтобы точно не было рядом)
+    const minDist = isMobile ? 110 : 90;
+    const farEnough = (px, py) => {
+      const cx = px + btnW / 2;
+      const cy = py + btnH / 2;
+      const dx = cx - yesCenterX;
+      const dy = cy - yesCenterY;
+      return Math.sqrt(dx * dx + dy * dy) >= minDist;
+    };
+
     let x = minX;
-    let y = preferMinY;
+    let y = maxY;
     let found = false;
 
-    for (let i = 0; i < 30; i++) {
+    // Сначала пробуем позиции подальше от «Да» (особенно снизу и по бокам)
+    for (let i = 0; i < 40; i++) {
       const tryX = minX + Math.random() * (maxX - minX);
-      const tryY = preferMinY + Math.random() * Math.max(0, preferMaxY - preferMinY);
-      if (!overlaps(tryX, tryY)) {
+      // На мобильных сильнее предпочитаем низ слайда
+      const yBias = isMobile ? 0.55 : 0.42;
+      const tryY = Math.max(minY, slideH * yBias) + Math.random() * Math.max(0, maxY - Math.max(minY, slideH * yBias));
+      if (!overlaps(tryX, tryY) && farEnough(tryX, tryY)) {
         x = tryX;
         y = tryY;
         found = true;
@@ -266,15 +160,23 @@
       }
     }
 
-    // Fallback: пробуем справа или слева от «Да»
-    if (!found && forbidden) {
+    // Надёжный fallback — углы и зоны вдали от «Да»
+    if (!found) {
       const candidates = [
-        { x: forbidden.right + 6, y: forbidden.top },
-        { x: forbidden.left - btnW - 6, y: forbidden.top },
-        { x: forbidden.left, y: forbidden.bottom + 6 },
+        { x: maxX, y: maxY },
         { x: minX, y: maxY },
-        { x: maxX, y: maxY }
+        { x: maxX, y: minY },
+        { x: minX, y: minY },
+        { x: maxX, y: (minY + maxY) / 2 },
+        { x: minX, y: (minY + maxY) / 2 },
+        { x: (minX + maxX) / 2, y: maxY }
       ];
+      // Сортируем по удалённости от «Да»
+      candidates.sort((a, b) => {
+        const da = Math.hypot(a.x + btnW / 2 - yesCenterX, a.y + btnH / 2 - yesCenterY);
+        const db = Math.hypot(b.x + btnW / 2 - yesCenterX, b.y + btnH / 2 - yesCenterY);
+        return db - da;
+      });
       for (const c of candidates) {
         const cx = Math.min(Math.max(minX, c.x), maxX);
         const cy = Math.min(Math.max(minY, c.y), maxY);
@@ -287,11 +189,11 @@
       }
     }
 
-    // Финальный жёсткий clamp — никогда не выходим за слайд
+    // Финальный clamp
     x = Math.min(Math.max(minX, x), maxX);
     y = Math.min(Math.max(minY, y), maxY);
 
-    button.style.zIndex = '10';
+    button.style.zIndex = '20';
     button.style.transition = 'left .55s cubic-bezier(0.22, 1, 0.36, 1), top .55s cubic-bezier(0.22, 1, 0.36, 1), transform .55s cubic-bezier(0.22, 1, 0.36, 1)';
     button.style.left = `${Math.round(x)}px`;
     button.style.top = `${Math.round(y)}px`;
@@ -301,15 +203,17 @@
 
   [noButton, ...document.querySelectorAll('.runaway')].forEach(button => {
     button.addEventListener('pointerenter', event => {
-      // On desktop, run away as the pointer approaches.
       if (event.pointerType === 'mouse') dodge(button, event);
     });
     button.addEventListener('pointerdown', event => {
-      // Touch devices get a real dodge on tap; no button action can be triggered.
+      // На тач-устройствах сразу убегаем и блокируем дальнейшие события
+      event.preventDefault();
+      event.stopPropagation();
       dodge(button, event);
-    });
+    }, { passive: false });
     button.addEventListener('click', event => {
       event.preventDefault();
+      event.stopPropagation();
       dodge(button, event);
     });
     button.addEventListener('focus', () => {
