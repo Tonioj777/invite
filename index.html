@@ -117,7 +117,8 @@
     .progress__bar--done { background: var(--color-ink); }
     .progress__bar--current { background: var(--color-yellow); }
 
-    .steps { display: grid; }
+    .steps { display: grid;
+    align-items: center; }
 
     .step {
       grid-area: 1 / 1;
@@ -389,8 +390,9 @@
         <div class="card card--sky">
           <span class="card__badge">Проверка на честность</span>
           <span class="card__emoji" aria-hidden="true">🤞</span>
-          <h2 class="card__title" tabindex="-1">Клянётесь, что не планировали остаться дома с чайком и сериалом?</h2>
-          <p class="card__text">Кстати, «Нет» испугалась и убегает. Это не баг, это такая фича.</p>
+          <h2 class="card__title" tabindex="-1">Клянётесь, что вместо ромашкового чая выберете что-нибудь с градусом и пузырьками?
+</h2>
+          <p class="card__text">«Ромашка, конечно, полезная. Но не на этот раз.»</p>
           <div class="card__actions">
             <div class="card__slot"><button class="button js-yes" type="button">Клянусь бокалом!</button></div>
             <div class="card__slot"><button class="button button--ghost js-no" type="button">Нет</button></div>
@@ -406,7 +408,7 @@
           <h2 class="card__title" tabindex="-1">Ура! Вы официально в списке гостей.</h2>
           <div class="ticket">
             <span class="ticket__label">Место сбора</span>
-            <address class="ticket__address">Мы как всегда в номере</address>
+            <address class="ticket__address">Как всегда в номере</address>
           </div>
           <p class="card__text">Дресс-код: хорошее настроение. Остальное с нас.</p>
         </div>
@@ -421,7 +423,7 @@
       const MIN_JUMP = 120;
       const BURST_COUNT = 36;
       const BURST_ICONS = ["🍷", "🍺", "🍸", "🥂", "🍹", "🍾", "🥃", "🎉", "🎊", "✨"];
-      const NO_LABELS = ["Мимо!", "Не поймал(а)!", "Ха-ха!", "Ой!", "Почти!", "Промах!", "Не сегодня!"];
+      const NO_LABELS = ["Мимо!", "Не поймали!", "Ха-ха!", "Ой!", "Почти!", "Промах!", "Не сегодня!"];
 
       const steps = [...document.querySelectorAll(".js-step")];
       const bars = [...document.querySelectorAll(".progress__bar")];
