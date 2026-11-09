@@ -1,116 +1,541 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171210">
-  <meta name="description" content="Небольшое интерактивное приглашение на хороший вечер.">
-  <title>Есть планы на вечер? ✨</title>
-  <link rel="preconnect" href="https://images.unsplash.com">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Вас приглашают!</title>
+  <meta name="description" content="Весёлое приглашение на вечер с напитками и хорошей компанией.">
+  <meta name="theme-color" content="#fff3d6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=Unbounded:wght@700;900&display=swap">
+  <style>
+    :root {
+      color-scheme: light;
+      --color-paper: #fff3d6;
+      --color-ink: #1b1b1b;
+      --color-white: #ffffff;
+      --color-yellow: #ffd23f;
+      --color-pink: #ff8fb1;
+      --color-sky: #7cc4ff;
+      --color-mint: #5eead4;
+      --color-lilac: #c4a1ff;
+      --font-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+      --font-text: "Rubik", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --border: 0.1875rem solid var(--color-ink);
+      --shadow: 0.375rem 0.375rem 0 var(--color-ink);
+      --space-s: 0.75rem;
+      --space-m: 1.5rem;
+      --space-l: 2rem;
+      --radius-m: 1.5rem;
+      --z-page: 1;
+      --z-marquee: 2;
+      --z-dodging: 10;
+      --z-burst: 20;
+      --duration: 0.2s;
+      --duration-step: 0.6s;
+      --ease-step: cubic-bezier(0.34, 1.4, 0.64, 1);
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    *, *::before, *::after { box-sizing: inherit; }
+
+    html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+    body {
+      display: grid;
+      place-items: center;
+      min-height: 100%;
+      margin: 0;
+      padding: 4.5rem var(--space-m) var(--space-m);
+      overflow-x: hidden;
+      font-family: var(--font-text);
+      line-height: 1.5;
+      color: var(--color-ink);
+      background-color: var(--color-paper);
+      background-image: radial-gradient(rgba(27, 27, 27, 0.14) 0.09375rem, transparent 0.09375rem);
+      background-size: 1.25rem 1.25rem;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .marquee {
+      position: fixed;
+      inset: env(safe-area-inset-top, 0px) 0 auto 0;
+      z-index: var(--z-marquee);
+      overflow: hidden;
+      padding: 0.5rem 0;
+      background: var(--color-ink);
+      color: var(--color-paper);
+      font-family: var(--font-display);
+      font-size: 0.875rem;
+      white-space: nowrap;
+    }
+
+    .marquee__track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 22s linear infinite;
+    }
+
+    .page {
+      position: relative;
+      z-index: var(--z-page);
+      display: grid;
+      gap: var(--space-m);
+      width: 100%;
+      max-width: 34rem;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .progress__bar {
+      height: 0.75rem;
+      background: var(--color-white);
+      border: var(--border);
+      border-radius: var(--radius-m);
+      transition: background-color var(--duration) ease;
+    }
+
+    .progress__bar--done { background: var(--color-ink); }
+    .progress__bar--current { background: var(--color-yellow); }
+
+    .steps { display: grid; }
+
+    .step {
+      grid-area: 1 / 1;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(35%) rotate(5deg) scale(0.9);
+      transition:
+        opacity var(--duration-step) var(--ease-step),
+        transform var(--duration-step) var(--ease-step),
+        visibility 0s linear var(--duration-step);
+    }
+
+    .step--past { transform: translateY(-35%) rotate(-5deg) scale(0.9); }
+
+    .step--current {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition-delay: 0.1s, 0.1s, 0s;
+    }
+
+    .card {
+      position: relative;
+      display: grid;
+      gap: var(--space-m);
+      justify-items: center;
+      padding: var(--space-l) var(--space-m) var(--space-m);
+      text-align: center;
+      background: var(--card-bg, var(--color-yellow));
+      border: var(--border);
+      border-radius: var(--radius-m);
+      box-shadow: var(--shadow);
+    }
+
+    .card--yellow { --card-bg: var(--color-yellow); }
+    .card--pink { --card-bg: var(--color-pink); }
+    .card--sky { --card-bg: var(--color-sky); }
+    .card--lilac { --card-bg: var(--color-lilac); }
+
+    .card__badge {
+      position: absolute;
+      top: -1.25rem;
+      left: 1rem;
+      padding: 0.25rem 0.875rem;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      color: var(--color-paper);
+      background: var(--color-ink);
+      border-radius: 62.5rem;
+      transform: rotate(-4deg);
+    }
+
+    .card__emoji {
+      display: grid;
+      place-items: center;
+      width: clamp(5rem, 24vw, 6.5rem);
+      aspect-ratio: 1;
+      font-size: clamp(2.75rem, 12vw, 3.75rem);
+      line-height: 1;
+      background: var(--color-white);
+      border: var(--border);
+      border-radius: 50%;
+      box-shadow: 0.25rem 0.25rem 0 var(--color-ink);
+    }
+
+    .step--current .card__emoji { animation: wobble 2.4s ease-in-out 0.7s infinite; }
+
+    .card__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.375rem, 6.2vw, 2rem);
+      font-weight: 900;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    .card__title:focus { outline: none; }
+
+    .card__text {
+      max-width: 26rem;
+      font-size: 1.0625rem;
+      font-weight: 500;
+      text-wrap: balance;
+    }
+
+    .card__actions {
+      display: grid;
+      gap: var(--space-s);
+      width: 100%;
+    }
+
+    .card__slot { min-height: 3.75rem; }
+
+    .ticket {
+      display: grid;
+      gap: 0.25rem;
+      width: 100%;
+      padding: var(--space-m);
+      background: var(--color-white);
+      border: 0.1875rem dashed var(--color-ink);
+      border-radius: var(--radius-m);
+    }
+
+    .ticket__label {
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .ticket__address {
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 5.5vw, 1.75rem);
+      font-style: normal;
+      font-weight: 900;
+      text-wrap: balance;
+    }
+
+    .step--current .ticket { animation: stamp 0.6s var(--ease-step) 0.5s both; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 3.75rem;
+      padding: 0.75rem 1.25rem;
+      font: inherit;
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--color-ink);
+      background: var(--color-white);
+      border: var(--border);
+      border-radius: 62.5rem;
+      box-shadow: 0.25rem 0.25rem 0 var(--color-ink);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform var(--duration) ease, box-shadow var(--duration) ease;
+    }
+
+    .button:focus-visible {
+      outline: 0.1875rem solid var(--color-ink);
+      outline-offset: 0.3125rem;
+    }
+
+    .button:active {
+      transform: translate(0.25rem, 0.25rem);
+      box-shadow: 0 0 0 var(--color-ink);
+    }
+
+    .button--ghost {
+      background: transparent;
+      border-style: dashed;
+      box-shadow: none;
+    }
+
+    .button--dodging {
+      position: fixed;
+      inset: 0 auto auto 0;
+      z-index: var(--z-dodging);
+      width: var(--dodge-w);
+      background: var(--color-white);
+      border-style: solid;
+      box-shadow: 0.25rem 0.25rem 0 var(--color-ink);
+      transform: translate(var(--dodge-x), var(--dodge-y));
+      transition: transform 0.3s var(--ease-step);
+    }
+
+    @media (hover: hover) {
+      .button:not(.button--ghost):hover {
+        transform: translate(-0.125rem, -0.125rem);
+        box-shadow: 0.375rem 0.375rem 0 var(--color-ink);
+      }
+    }
+
+    @media (min-width: 36em) {
+      .card { padding: 2.5rem var(--space-l) var(--space-l); }
+      .card__actions { grid-template-columns: 1.3fr 1fr; }
+    }
+
+    .burst {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-burst);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .burst__item {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 2rem;
+      animation: fly 1.8s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+    }
+
+    @keyframes scroll-left {
+      to { transform: translateX(-100%); }
+    }
+
+    @keyframes wobble {
+      0%, 55%, 100% { transform: rotate(0); }
+      65% { transform: rotate(-12deg) scale(1.08); }
+      75% { transform: rotate(10deg) scale(1.08); }
+      85% { transform: rotate(-4deg); }
+    }
+
+    @keyframes stamp {
+      from { opacity: 0; transform: scale(1.5) rotate(-8deg); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes fly {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4) rotate(0); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2) rotate(var(--rot)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .step, .progress__bar, .button, .button--dodging { transition: none; }
+      .marquee__track, .step--current .card__emoji, .step--current .ticket, .burst__item { animation: none; }
+      .marquee__track { padding-left: 0; }
+      .burst { display: none; }
+      .step, .step--past { transform: none; }
+    }
+  </style>
 </head>
 <body>
-  <main class="site-shell">
-    <!-- <div class="topline">
-      <a class="brand" href="#" aria-label="Начать сначала" id="restart">вечер<span>•</span></a>
-      <span class="topline-note">маленькое приглашение</span>
-      <span class="step-count" id="stepCount">01 / 04</span>
-    </div> -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">🍷 Вино &nbsp; 🍺 Пиво &nbsp; 🍸 Коктейли &nbsp; 🥂 Шампанское &nbsp; 🍹 Моджито &nbsp; 🥃 Виски &nbsp; 🍕 Закуски &nbsp; 🎉 Смех без причины &nbsp; 🍷 Вино &nbsp; 🍺 Пиво &nbsp; 🍸 Коктейли</div>
+  </div>
+  <div class="burst js-burst" aria-hidden="true"></div>
 
-    <section class="experience" aria-live="polite">
-      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <main class="page">
+    <h1 class="visually-hidden">Весёлое приглашение на вечер</h1>
 
-      <article class="slide is-active" data-slide="0">
-        <div class="photo photo-lounge"></div>
-        <div class="shade"></div>
-        <div class="slide-content">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> Есть предложение!</p>
-          <h1 class="text">Как насчёт того, чтобы сегодня вечером отложить все дела, забыть о заботах и провести время в приятной компании?  <span class="smile">:)</span></h1>
-          <p class="subcopy">Кажется, у меня есть идея.</p>
-          <div class="actions">
-            <button class="btn btn-yes" data-next>Да,заманчиво! <span>😊</span></button>
-            <button class="btn btn-no" id="noButton">Нет <span>🙈</span></button>
+    <div class="progress js-progress" aria-hidden="true">
+      <span class="progress__bar"></span>
+      <span class="progress__bar"></span>
+      <span class="progress__bar"></span>
+    </div>
+
+    <div class="steps">
+      <section class="step step--current js-step" aria-label="Шаг 1 из 3">
+        <div class="card card--yellow">
+          <span class="card__badge">Секретная миссия</span>
+          <span class="card__emoji" aria-hidden="true">🕵️</span>
+          <h2 class="card__title" tabindex="-1">Срочно нужен человек для важного дела: выпить, поболтать и не грустить!</h2>
+          <p class="card__text">Вы подходите по всем параметрам. Ну, почти по всем.</p>
+          <div class="card__actions">
+            <div class="card__slot"><button class="button js-yes" type="button">Беру миссию!</button></div>
+            <div class="card__slot"><button class="button button--ghost js-no" type="button">Нет</button></div>
           </div>
-          <p class="hint" id="hint">Попробуйте нажать «Нет»… если получится</p>
         </div>
-        <span class="slide-index">01 <i>—</i> 04</span>
-      </article>
+      </section>
 
-      <article class="slide" data-slide="1">
-        <div class="photo photo-dinner"></div>
-        <div class="shade"></div>
-        <div class="slide-content">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> План звучит неплохо</p>
-          <h2>А если я скажу, что нас ждёт… Посидеть, поболтать,<br>выпить и вкусно<br><em>покушать?</em> </h2>
-          <p class="subcopy">Без спешки, с хорошей компанией и вкусной едой. Ну что, соблазнительно звучит? :)</p>
-          <div class="actions">
-            <button class="btn btn-yes" data-next>Да <span>😊</span></button>
-            <button class="btn btn-no runaway">Нет <span>🙈</span></button>
+      <section class="step js-step" aria-label="Шаг 2 из 3" inert>
+        <div class="card card--pink">
+          <span class="card__badge">Меню вечера</span>
+          <span class="card__emoji" aria-hidden="true">🍹</span>
+          <h2 class="card__title" tabindex="-1">В программе: коктейли, закуски, байки и смех без причины. Берём всё?</h2>
+          <p class="card__text">Скучные разговоры про работу в меню не входят.</p>
+          <div class="card__actions">
+            <div class="card__slot"><button class="button js-yes" type="button">Давайте всё и сразу</button></div>
+            <div class="card__slot"><button class="button button--ghost js-no" type="button">Нет</button></div>
           </div>
-          <p class="hint">Кажется, ответ уже очевиден</p>
         </div>
-        <span class="slide-index">02 <i>—</i> 04</span>
-      </article>
+      </section>
 
-      <article class="slide" data-slide="2">
-        <div class="photo photo-cat"></div>
-        <div class="shade shade-strong"></div>
-        <div class="slide-content">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> Вот это настрой</p>
-          <h2>Я рад, что вы не стали долго раздумывать и уверенно нажали  <em>«да»</em> <span class="smile">:)</span></h2>
-          <p class="confirmation">А теперь подтвердим<br>ваши намерения.</p>
-          <div class="actions">
-            <button class="btn btn-yes" data-next>Да, подтверждаю <span>🥰</span></button>
-            <button class="btn btn-no runaway">Нет <span>🙈</span></button>
+      <section class="step js-step" aria-label="Шаг 3 из 3" inert>
+        <div class="card card--sky">
+          <span class="card__badge">Проверка на честность</span>
+          <span class="card__emoji" aria-hidden="true">🤞</span>
+          <h2 class="card__title" tabindex="-1">Клянётесь, что не планировали остаться дома с чайком и сериалом?</h2>
+          <p class="card__text">Кстати, «Нет» испугалась и убегает. Это не баг, это такая фича.</p>
+          <div class="card__actions">
+            <div class="card__slot"><button class="button js-yes" type="button">Клянусь бокалом!</button></div>
+            <div class="card__slot"><button class="button button--ghost js-no" type="button">Нет</button></div>
           </div>
-          <p class="hint">Последний шаг — и всё узнаете</p>
         </div>
-        <span class="slide-index">03 <i>—</i> 04</span>
-      </article>
+      </section>
 
-      <article class="slide final-slide" data-slide="3">
-        <div class="photo photo-room"></div>
-        <div class="shade"></div>
-        <div class="slide-content final-content">
-          <p class="eyebrow"><span class="eyebrow-dot"></span> Отличный выбор</p>
-          <h2>Приходите с хорошим настроением, остальное с нас.<span class="smile">:)</span></h2>
-          <!-- <div class="address-card">
-            <span class="pin" aria-hidden="true">⌖</span>
-            <div>
-              <p class="address-label">Наш адрес</p>
-              <p class="address-name" id="addressName">Hotel Paradise</p>
-              <p id="addressStreet">ул. Примерная, 12</p>
-              <p id="addressRoom">Комната 306</p>
-            </div> -->
-            <!-- <button class="copy-btn" id="copyAddress" aria-label="Скопировать адрес" title="Скопировать адрес">⧉</button>
+      <!-- Финал. Адрес меняется прямо в <address> ниже -->
+      <section class="step js-step" aria-label="Подтверждено" inert>
+        <div class="card card--lilac">
+          <span class="card__badge">Вы в списке!</span>
+          <span class="card__emoji" aria-hidden="true">🎉</span>
+          <h2 class="card__title" tabindex="-1">Ура! Вы официально в списке гостей.</h2>
+          <div class="ticket">
+            <span class="ticket__label">Место сбора</span>
+            <address class="ticket__address">Мы как всегда в номере</address>
           </div>
-          <p class="final-note" id="copyStatus">Сохраняйте адрес и до встречи ✨</p> -->
-          <div class="btn btn-yes final-cta" id="finishButton"><span class="calendar-icon">✨</span> До встречи!</div>
-          <!-- <button class="restart-link" id="restartFinal">Пройти ещё раз</button> -->
+          <p class="card__text">Дресс-код: хорошее настроение. Остальное с нас.</p>
         </div>
-        <span class="slide-index">04 <i>—</i> 04</span>
-      </article>
-
-      <div class="slide-controls" aria-label="Навигация по приглашению">
-        <button id="prevSlide" class="arrow-btn" aria-label="Предыдущий экран" disabled>←</button>
-        <!-- <div class="dots" id="dots">
-          <button class="dot active" data-go="0" aria-label="Экран 1"></button>
-          <button class="dot" data-go="1" aria-label="Экран 2"></button>
-          <button class="dot" data-go="2" aria-label="Экран 3"></button>
-          <button class="dot" data-go="3" aria-label="Экран 4"></button>
-        </div> -->
-        <button id="nextSlide" class="arrow-btn" aria-label="Следующий экран">→</button>
-      </div>
-    </section>
-
-    <!-- <footer class="footer">
-      <div class="footer-item"><span class="footer-icon">▣</span><div><h3>Один экран — целая история</h3><p>Плавные переходы и наезды создают живое, цельное впечатление.</p></div></div>
-      <div class="footer-item"><span class="footer-icon">↯</span><div><h3>Немного интерактива</h3><p>Кнопка «Нет» ускользает, потому что иногда ответ и так известен.</p></div></div>
-      <div class="footer-item"><span class="footer-icon">✧</span><div><h3>Эмоции и атмосфера</h3><p>Тёплый свет, мягкие детали и лёгкий юмор вместо обычного приглашения.</p></div></div>
-      <div class="footer-tag">Просто.<br>Стильно.<br><em>С характером.</em> ☺</div>
-    </footer> -->
-    <!-- <p class="fineprint">Сделано для хорошего вечера <span>♥</span></p> -->
+      </section>
+    </div>
   </main>
-  <script src="script.js"></script>
+
+  <script>
+    (() => {
+      const MARGIN = 16;
+      const MAX_TRIES = 30;
+      const MIN_JUMP = 120;
+      const BURST_COUNT = 36;
+      const BURST_ICONS = ["🍷", "🍺", "🍸", "🥂", "🍹", "🍾", "🥃", "🎉", "🎊", "✨"];
+      const NO_LABELS = ["Мимо!", "Не поймал(а)!", "Ха-ха!", "Ой!", "Почти!", "Промах!", "Не сегодня!"];
+
+      const steps = [...document.querySelectorAll(".js-step")];
+      const bars = [...document.querySelectorAll(".progress__bar")];
+      const progress = document.querySelector(".js-progress");
+      const burst = document.querySelector(".js-burst");
+      const stepsContainer = document.querySelector(".steps");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      let current = 0;
+      let dodges = 0;
+
+      const random = (min, max) => min + Math.random() * Math.max(0, max - min);
+
+      const overlaps = (a, b, gap) =>
+        a.left < b.right + gap && a.right > b.left - gap &&
+        a.top < b.bottom + gap && a.bottom > b.top - gap;
+
+      const launchBurst = () => {
+        if (reducedMotion.matches) return;
+        for (let i = 0; i < BURST_COUNT; i += 1) {
+          const item = document.createElement("span");
+          const angle = random(0, Math.PI * 2);
+          const distance = random(120, Math.min(window.innerWidth, 560));
+          item.className = "burst__item";
+          item.textContent = BURST_ICONS[i % BURST_ICONS.length];
+          item.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);
+          item.style.setProperty("--dy", `${Math.sin(angle) * distance - 80}px`);
+          item.style.setProperty("--rot", `${random(-360, 360)}deg`);
+          item.addEventListener("animationend", () => item.remove(), { once: true });
+          burst.append(item);
+        }
+      };
+
+      const updateProgress = () => {
+        progress.hidden = current >= bars.length;
+        bars.forEach((bar, index) => {
+          bar.classList.toggle("progress__bar--done", index < current);
+          bar.classList.toggle("progress__bar--current", index === current);
+        });
+      };
+
+      const dodge = (noButton) => {
+        const viewport = window.visualViewport;
+        const vw = viewport ? viewport.width : window.innerWidth;
+        const vh = viewport ? viewport.height : window.innerHeight;
+        const rect = noButton.getBoundingClientRect();
+        const avoid = noButton.closest(".js-step").querySelector(".js-yes").getBoundingClientRect();
+        const top = 56;
+
+        let best = { x: rect.left, y: rect.top };
+        for (let i = 0; i < MAX_TRIES; i += 1) {
+          const x = random(MARGIN, vw - rect.width - MARGIN);
+          const y = random(top, vh - rect.height - MARGIN);
+          const next = { left: x, top: y, right: x + rect.width, bottom: y + rect.height };
+          const farEnough = Math.hypot(x - rect.left, y - rect.top) > MIN_JUMP;
+          if (farEnough && !overlaps(next, avoid, MARGIN)) {
+            best = { x, y };
+            break;
+          }
+        }
+
+        noButton.style.setProperty("--dodge-w", `${rect.width}px`);
+        noButton.style.setProperty("--dodge-x", `${best.x}px`);
+        noButton.style.setProperty("--dodge-y", `${best.y}px`);
+        noButton.classList.add("button--dodging");
+        noButton.textContent = NO_LABELS[dodges % NO_LABELS.length];
+        dodges += 1;
+      };
+
+      const goToNext = () => {
+        const leaving = steps[current];
+        const leavingNo = leaving.querySelector(".js-no");
+        if (leavingNo) leavingNo.classList.remove("button--dodging");
+        leaving.classList.remove("step--current");
+        leaving.classList.add("step--past");
+        leaving.inert = true;
+
+        current += 1;
+        const entering = steps[current];
+        entering.inert = false;
+        entering.classList.add("step--current");
+        entering.querySelector(".card__title").focus({ preventScroll: true });
+        updateProgress();
+
+        if (current === steps.length - 1) launchBurst();
+      };
+
+      const onDodge = (event) => {
+        const noButton = event.target.closest(".js-no");
+        if (!noButton) return;
+        event.preventDefault();
+        dodge(noButton);
+      };
+
+      stepsContainer.addEventListener("pointerover", (event) => {
+        if (event.pointerType === "mouse") onDodge(event);
+      });
+      stepsContainer.addEventListener("pointerdown", onDodge);
+      stepsContainer.addEventListener("touchstart", onDodge, { passive: false });
+      stepsContainer.addEventListener("click", (event) => {
+        if (event.target.closest(".js-no")) {
+          onDodge(event);
+        } else if (event.target.closest(".js-yes")) {
+          goToNext();
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        const noButton = steps[current].querySelector(".js-no.button--dodging");
+        if (noButton) dodge(noButton);
+      });
+
+      updateProgress();
+    })();
+  </script>
 </body>
 </html>
